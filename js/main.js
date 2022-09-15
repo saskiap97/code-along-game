@@ -13,7 +13,7 @@ class Game {
            
             const newObstacle = new Obstacle();
             this.obstacles.push(newObstacle);
-        }, 3000);
+        }, 2000);
         
 
    //move obstacles
@@ -21,7 +21,7 @@ class Game {
     this.obstacles.forEach( (obstacleInstance) => {
 
         //move
-        obstacleInstance.moveDown();
+       obstacleInstance.moveDown();
 
         //detect collision
         if (
@@ -63,7 +63,9 @@ class Player {
     }
     createDomElement(){
         // create dom element
-        this.domElement = document.createElement('div');
+        this.domElement = document.createElement('img');
+        this.domElement.setAttribute("src", "/images/Chicken_cartoon_04.svg.png")
+
 
         // set id and css
         this.domElement.id = "player";
@@ -78,18 +80,24 @@ class Player {
     }
     moveLeft(){
         this.positionX-=2;
+        if(this.positionX < 0){this.positionX = 0}
         this.domElement.style.left = this.positionX + "vw";
+        
+
+     
 
     }
     moveRight(){
         this.positionX+=2;
+        if(this.positionX > 80){this.positionX = 80}
         this.domElement.style.left = this.positionX + "vw";
+        ;
     }
 }
 
 class Obstacle {
     constructor(){
-        this.positionX = 50;
+        this.positionX =Math.floor(Math.random() * 70);
         this.positionY = 90;
         this.width = 10;
         this.height = 10;
@@ -98,7 +106,8 @@ class Obstacle {
     }
     createDomElement(){
         // create dom element
-        this.domElement = document.createElement('div');
+        this.domElement = document.createElement('img');
+        this.domElement.setAttribute("src", "/images/egg.png")
 
         // set id and css
         this.domElement.className = "obstacle";
@@ -114,7 +123,7 @@ class Obstacle {
 
 
     moveDown(){
-        this.positionY--;
+        this.positionY-=2;
         this.domElement.style.bottom = this.positionY + "vh";
 
     }
