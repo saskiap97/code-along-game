@@ -1,45 +1,29 @@
 class Game {
     constructor(){
         this.player = null; //will store an instance of the class Player
-        this.obstacles = []; //will store instance of the class obstacle
+        this.obstacles = []; //will store instances of the class Obstacle
     }
-
     start(){
         this.player = new Player();
         this.attachEventListeners();
-
-         //create new obstacle
-         setInterval(() => {
-           
+        
+        //create new obstacles
+        setInterval(() => {
             const newObstacle = new Obstacle();
             this.obstacles.push(newObstacle);
-        }, 2000);
-        
+        }, 1000);
 
-   //move obstacles
-   setInterval(() => {
-    this.obstacles.forEach( (obstacleInstance) => {
+        //move obstacles
+        setInterval(() => {
+            this.obstacles.forEach( (obstacleInstance) => {
+                obstacleInstance.moveDown(); //move
+                this.detectCollision(obstacleInstance); //detect collision with current obstacle
+                this.removeObstacleIfOutside(obstacleInstance); //check if we need to remove current obstacle
+            });
+        }, 60);
 
-        //move
-       obstacleInstance.moveDown();
 
-        //detect collision
-        if (
-            this.player.positionX < obstacleInstance.positionX + obstacleInstance.width &&
-            this.player.positionX + this.player.width > obstacleInstance.positionX &&
-            this.player.positionY < obstacleInstance.positionY + obstacleInstance.height &&
-            this.player.height + this.player.positionY > obstacleInstance.positionY
-        ) {
-            location.href = "gameover.html"
-        }
-
-    });
-}, 60);
-
-       
     }
-
-
     attachEventListeners(){
         document.addEventListener("keydown", (event) => {
             if(event.key === "ArrowLeft"){
@@ -49,15 +33,31 @@ class Game {
             }
         });
     }
+    detectCollision(obstacleInstance){
+        if (
+            this.player.positionX < obstacleInstance.positionX + obstacleInstance.width &&
+            this.player.positionX + this.player.width > obstacleInstance.positionX &&
+            this.player.positionY < obstacleInstance.positionY + obstacleInstance.height &&
+            this.player.height + this.player.positionY > obstacleInstance.positionY
+        ) {
+            console.log("game over....")
+            location.href = 'gameover.html';
+        }
+    }
+    removeObstacleIfOutside(obstacleInstance){
+        if(obstacleInstance.positionY < 0){
+            obstacleInstance.domElement.remove(); //remove from the dom
+            this.obstacles.shift(); // remove from the array
+        }
+    }
 }
-
 
 class Player {
     constructor(){
-        this.positionX = 50;
-        this.positionY = 0;
         this.width = 20;
         this.height = 10;
+        this.positionX = 50;
+        this.positionY = 0;
         this.domElement = null;
         this.createDomElement();
     }
@@ -97,10 +97,10 @@ class Player {
 
 class Obstacle {
     constructor(){
-        this.positionX =Math.floor(Math.random() * 70);
-        this.positionY = 90;
         this.width = 10;
         this.height = 10;
+        this.positionX =Math.floor(Math.random() * (100-this.width+1));
+        this.positionY = 90;
         this.domElement = null;
         this.createDomElement()
     }
